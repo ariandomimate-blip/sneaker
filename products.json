@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "usage": "Use only your own, licensed, or otherwise authorized product images and product data.",
+  "categories": [
+    {"id":"running","name":"Running"},
+    {"id":"street","name":"Street"},
+    {"id":"basketball","name":"Basketball"},
+    {"id":"lifestyle","name":"Lifestyle"},
+    {"id":"limited","name":"Limited"}
+  ],
+  "products": [
+    {"id":"runner","name":"Runner One","category":"running","price":89.90,"sizes":[36,37,38,39,40,41,42,43,44,45,46,47],"image":"assets/products/runner-one.jpg","description":"Leichter Alltags- und Running-Sneaker mit atmungsaktivem Obermaterial und komfortabler Dämpfung."},
+    {"id":"street","name":"Street Force","category":"street","price":99.90,"sizes":[36,37,38,39,40,41,42,43,44,45,46,47],"image":"assets/products/street-force.jpg","description":"Urbaner Sneaker für Alltag und Streetwear mit stabiler Sohle und markanter Silhouette."},
+    {"id":"limited","name":"Limited Drop 01","category":"limited","price":129.90,"sizes":[38,39,40,41,42,43,44,45],"image":"assets/products/limited-drop-01.jpg","description":"Limitierte Eigenkreation mit exklusivem Drop-Charakter und hochwertigem Finish."},
+    {"id":"classic","name":"Classic Core","category":"lifestyle","price":79.90,"sizes":[36,37,38,39,40,41,42,43,44,45,46],"image":"assets/products/classic-core.jpg","description":"Cleanes Everyday-Design für einen vielseitigen minimalistischen Look."},
+    {"id":"speed","name":"Speed Runner","category":"running","price":109.90,"sizes":[38,39,40,41,42,43,44,45,46,47],"image":"assets/products/speed-runner.jpg","description":"Sportlicher Laufschuh mit dynamischem Profil und komfortabler Dämpfung."},
+    {"id":"urban","name":"Urban Edge","category":"street","price":94.90,"sizes":[36,37,38,39,40,41,42,43,44,45,46,47],"image":"assets/products/urban-edge.jpg","description":"Modernes Streetwear-Profil mit robustem Aufbau und vielseitigem Styling."},
+    {"id":"drop2","name":"Limited Drop 02","category":"limited","price":139.90,"sizes":[39,40,41,42,43,44,45],"image":"assets/products/limited-drop-02.jpg","description":"Neue limitierte Eigenedition für Sammler und Sneaker-Fans."},
+    {"id":"daily","name":"Daily Motion","category":"lifestyle","price":84.90,"sizes":[36,37,38,39,40,41,42,43,44,45,46,47],"image":"assets/products/daily-motion.jpg","description":"Komfortabler Sneaker für jeden Tag mit leichter, flexibler Konstruktion."}
+  ]
+}
