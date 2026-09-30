@@ -1,4 +1,28 @@
 import os,json,requests
+
+# SECURITY HARDENING
+from collections import defaultdict, deque
+from time import monotonic
+_SEC_RATE=defaultdict(deque)
+@app.before_request
+def _sec_before():
+    if request.content_length and request.content_length > 1048576: return jsonify(error="Request too large."),413
+    if request.path in {"/.env","/.git/config","/server.py","/app.py","/main.py","/package.json","/requirements.txt","/render.yaml","/Procfile"} or request.path.startswith("/.git/") or request.path.startswith("/.env"): return jsonify(error="Not Found."),404
+    q=_SEC_RATE[request.remote_addr or "unknown"]; now=monotonic()
+    while q and now-q[0]>60:q.popleft()
+    if len(q)>=(30 if request.method in {"POST","PUT","PATCH","DELETE"} else 120): return jsonify(error="Too many requests. Please try again later."),429
+    q.append(now)
+@app.after_request
+def _sec_headers(response):
+    response.headers.setdefault("X-Content-Type-Options","nosniff")
+    response.headers.setdefault("X-Frame-Options","DENY")
+    response.headers.setdefault("Referrer-Policy","strict-origin-when-cross-origin")
+    response.headers.setdefault("Permissions-Policy","camera=(), microphone=(), geolocation=()")
+    response.headers.setdefault("Cross-Origin-Opener-Policy","same-origin")
+    response.headers.setdefault("Strict-Transport-Security","max-age=31536000; includeSubDomains")
+    if request.path.startswith("/api/"): response.headers["Cache-Control"]="no-store"
+    response.headers.pop("Server",None)
+    return response
 from flask import Flask,send_from_directory,jsonify,request
 app=Flask(__name__,static_folder='.',static_url_path='')
 PRODUCTS={p['id']:p for p in json.load(open('products.json',encoding='utf-8')).get('products',[])}
