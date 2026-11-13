@@ -26,6 +26,17 @@ def _sec_headers(response):
 from flask import Flask,send_from_directory,jsonify,request
 app=Flask(__name__,static_folder='.',static_url_path='')
 PRODUCTS={p['id']:p for p in json.load(open('products.json',encoding='utf-8')).get('products',[])}
+
+def sync_ultima_order(order_number, customer, items, total):
+    base=os.getenv('ULTIMA_API_BASE','https://ultima-membership-api.onrender.com').rstrip('/')
+    slug=os.getenv('ULTIMA_SITE_SLUG','sneaker-store').strip()
+    token=os.getenv('ULTIMA_ORDER_TOKEN','').strip()
+    if not token:return
+    payload={'external_order_id':order_number,'order_number':order_number,'customer_name':str(customer.get('name','')),'customer_email':str(customer.get('email','')),'currency':'EUR','total_amount':round(float(total),2),'payment_status':'pending','fulfillment_status':'new','items':[{'name':n,'quantity':q,'unit_price':p,'total':round(q*p,2)} for n,q,p in items],'source':'sneaker-store'}
+    try:
+        r=requests.post(f'{base}/api/integrations/{slug}/orders',json=payload,headers={'X-ULTIMA-ORDER-TOKEN':token},timeout=8);r.raise_for_status()
+    except Exception as exc:app.logger.warning('ULTIMA order sync failed: %s',exc)
+
 @app.get('/')
 def index():return send_from_directory('.','index.html')
 @app.get('/api/health')
@@ -51,6 +62,7 @@ def telegram_order():
         if not r.ok or not result.get('ok'):raise RuntimeError(result.get('description','Telegram-Fehler'))
     except Exception as exc:
         app.logger.exception('Telegram order send failed: %s',exc);return jsonify(error='Bestellung konnte nicht an Telegram gesendet werden.'),502
+    sync_ultima_order(order_no,customer,normalized,total)
     username=os.getenv('TELEGRAM_BOT_USERNAME','').strip().lstrip('@')
     return jsonify(ok=True,order_number=order_no,telegram_url=f'https://t.me/{username}?start={order_no}' if username else None),201
 @app.route('/<path:path>')
