@@ -1,4 +1,6 @@
 import os,json,requests
+from flask import Flask,send_from_directory,jsonify,request
+app=Flask(__name__,static_folder='.',static_url_path='')
 
 # SECURITY HARDENING
 from collections import defaultdict, deque
@@ -23,8 +25,7 @@ def _sec_headers(response):
     if request.path.startswith("/api/"): response.headers["Cache-Control"]="no-store"
     response.headers.pop("Server",None)
     return response
-from flask import Flask,send_from_directory,jsonify,request
-app=Flask(__name__,static_folder='.',static_url_path='')
+
 PRODUCTS={p['id']:p for p in json.load(open('products.json',encoding='utf-8')).get('products',[])}
 
 def sync_ultima_order(order_number, customer, items, total):
